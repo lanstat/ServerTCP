@@ -50,9 +50,9 @@ Para poder recepcionar la respuesta del servidor, se debe implementar la interfa
 
 ```java
 public class Receptor implements Observer{
+...
+Client.getInstance().getReader().addObserver(Receptor.this);
+...
 }
 ```
 
-```java
-Client.getInstance().getReader().addObserver(Receptor);
-```

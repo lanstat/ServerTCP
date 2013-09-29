@@ -6,6 +6,9 @@ de las conexiones activas como tambien de la recepcion de paquetes.
 Implementacion
 --------------------------------------
 
+Servidor
+--------------------------------------
+
 Es necesario crear una clase que implemente la interfaz `IHandler`. Esta clase sera la encargada de recepcionar los
 paquetes y procesarlos.
 Esta clase debe tener un constructor por defecto.
@@ -28,3 +31,28 @@ server.registerHandler(MiManejador.class);
 server.start();
 ```
 
+Cliente
+--------------------------------------
+
+```java
+  Client.getInstance().connect("127.0.0.1", 6000);
+```
+
+Para enviar un paquete se usa la siguiente estructura
+
+```java
+Packet packet = new Packet(0);
+packet.setData(true, "prueba", 1);
+Client.getInstance().sendPackage(packet);
+```
+
+Para poder recepcionar la respuesta del servidor, se debe implementar la interfaz observer.
+
+```java
+public class Receptor implements Observer{
+}
+```
+
+```java
+Client.getInstance().getReader().addObserver(Receptor);
+```

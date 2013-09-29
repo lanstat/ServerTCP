@@ -6,6 +6,9 @@ import java.util.HashMap;
 
 
 
+
+
+import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
 
 public class Group {
@@ -49,7 +52,7 @@ public class Group {
 	}
 	
 	public void saveImage(Peer lclsPeer){
-		Utils.saveImage(mclsPeers.get(lclsPeer.getGroupID()).marrImage, "foto");
+		//Utils.saveImage(mclsPeers.get(lclsPeer.getGroupID()).marrImage, "foto");
 	}
 	
 	public int[] obtainUsersId(int lintId){

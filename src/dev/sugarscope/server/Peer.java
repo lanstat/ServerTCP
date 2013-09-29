@@ -3,6 +3,7 @@ package dev.sugarscope.server;
 import java.io.IOException;
 import java.net.Socket;
 
+import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
 
 public class Peer{

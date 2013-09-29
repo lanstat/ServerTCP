@@ -1,30 +1,30 @@
-package dev.sugarscope.server;
+package dev.sugarscope.client;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Observable;
 
 import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
 
-public class Reader implements Runnable{
+public class Reader extends Observable implements Runnable {
 	private byte[] marrBuffer;
 	private BufferedInputStream mclsInput;
 	public final int BUFFER_SIZE = 1024;
 	private boolean mblnIsAlive = true;
-	private IHandler mclsHandler;
 	
-	public Reader(InputStream lclsInput, IHandler lclsHandler) throws IOException{
+	public Reader(InputStream lclsInput) throws IOException{
 		marrBuffer = new byte[0];
 		mclsInput = new BufferedInputStream(lclsInput);
-		mclsHandler = lclsHandler;
 	}
 	
-	public void setRunning(boolean lblnRun){
-		mblnIsAlive = lblnRun;
+	public void setRunning(boolean lblnRunning){
+		mblnIsAlive = lblnRunning;
 		try {
 			mclsInput.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -37,19 +37,16 @@ public class Reader implements Runnable{
 				if(mclsInput.available()==0){
 					marrBuffer = Utils.concat(marrBuffer, larrBuffer);
 					final Packet lclsPacket = (Packet)Utils.deserialize(marrBuffer);
-					mclsHandler.handleMessage(lclsPacket);
+					setChanged();
+					notifyObservers(lclsPacket);
 					marrBuffer = new byte[0];
 				}else{
 					marrBuffer = Utils.concat(marrBuffer, larrBuffer);
 				}
-			} catch (IOException | ClassNotFoundException e) {
+			} catch (Exception e) {
 				mblnIsAlive = false;
-				System.out.println(e);
-			}
+			} 
 		}
-		
 	}
-	
-	
-	
+
 }

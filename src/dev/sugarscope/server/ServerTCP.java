@@ -26,13 +26,21 @@ public class ServerTCP {
 		return marrPeersActive;
 	}
 	
+	public static Peer getPeer(int lintId){
+		for(Peer lclsPeer: marrPeersActive){
+			if(lclsPeer.hashCode() == lintId)
+				return lclsPeer;
+		}
+		return null;
+	}
+	
 	private void acceptClients() throws IOException{
 		while(mblnRunning){
 			System.out.println("Esperando clientes....");
 			Socket lclsSocket = mclsServer.accept();
 			Peer lclsPeer = new Peer(lclsSocket);
 			try {
-				lclsPeer.initialize((IHandler)mclsHandlerClass.newInstance());
+				lclsPeer.initialize((Handler)mclsHandlerClass.newInstance());
 			} catch (InstantiationException e) {
 				System.out.println(e.getMessage());
 			} catch (IllegalAccessException e) {

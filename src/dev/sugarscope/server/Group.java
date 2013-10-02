@@ -71,9 +71,9 @@ public class Group {
 		GroupPeer larrPeers = mclsPeers.get(lclsSender.getGroupID());
 		for(Peer lclsPeer: larrPeers.marrIntegrants){
 			if(lclsPeer.equals(lclsSender) && lblnHimself){
-				lclsPeer.sendMessage(lclsPacket);
+				lclsPeer.sendPackage(lclsPacket);
 			}else{
-				lclsPeer.sendMessage(lclsPacket);
+				lclsPeer.sendPackage(lclsPacket);
 			}
 		}
 	}

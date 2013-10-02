@@ -3,21 +3,24 @@ package dev.sugarscope.server;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Observable;
 
 import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
 
-public class Reader implements Runnable{
+public class Reader extends Observable implements Runnable{
 	private byte[] marrBuffer;
 	private BufferedInputStream mclsInput;
 	public final int BUFFER_SIZE = 1024;
 	private boolean mblnIsAlive = true;
-	private IHandler mclsHandler;
+	private Handler mclsHandler;
+	private final int mintPeerId;
 	
-	public Reader(InputStream lclsInput, IHandler lclsHandler) throws IOException{
+	public Reader(InputStream lclsInput, Handler lclsHandler, int lintPeerId) throws IOException{
 		marrBuffer = new byte[0];
 		mclsInput = new BufferedInputStream(lclsInput);
 		mclsHandler = lclsHandler;
+		mintPeerId = lintPeerId;
 	}
 	
 	public void setRunning(boolean lblnRun){
@@ -45,6 +48,7 @@ public class Reader implements Runnable{
 			} catch (IOException | ClassNotFoundException e) {
 				mblnIsAlive = false;
 				System.out.println(e);
+				ServerTCP.getPeer(mintPeerId).close();
 			}
 		}
 		

@@ -3,21 +3,29 @@
 ServerTCP es una libreria que permite crear un servidor TCP, abstrayendo al programador de la administracion,
 de las conexiones activas como tambien de la recepcion de paquetes.
 
+Plataformas soportadas
+--------------------------------------
+
+- Java SE
+- Android
+- BlackBerry
+
 Implementacion
 --------------------------------------
 
 Servidor
 --------------------------------------
 
-Es necesario crear una clase que implemente la interfaz `IHandler`. Esta clase sera la encargada de recepcionar los
+Es necesario crear una clase que herede la clase `Handler`. Esta clase sera la encargada de recepcionar los
 paquetes y procesarlos.
 Esta clase debe tener un constructor por defecto.
 
 ```java
-public class MiManejador implements IHandler{
+public class MiManejador extends IHandler{
   public MiManejador(){
   }
   
+  @Override
   public void handleMessage(Packet receivePacket){}
 }
 ```

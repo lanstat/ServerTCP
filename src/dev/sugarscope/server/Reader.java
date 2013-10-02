@@ -3,12 +3,11 @@ package dev.sugarscope.server;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Observable;
 
 import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
 
-public class Reader extends Observable implements Runnable{
+public class Reader implements Runnable{
 	private byte[] marrBuffer;
 	private BufferedInputStream mclsInput;
 	public final int BUFFER_SIZE = 1024;

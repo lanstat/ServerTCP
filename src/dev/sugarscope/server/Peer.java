@@ -85,18 +85,14 @@ public class Peer implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o instanceof Sender){
-			if(marrStackPakects.isEmpty()){
-				mblnSendingInProcess = false;
-				return;
-			}
-			try {
-				sendPacketNow(marrStackPakects.pop());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else if(o instanceof Reader){
-			
+		if(marrStackPakects.isEmpty()){
+			mblnSendingInProcess = false;
+			return;
+		}
+		try {
+			sendPacketNow(marrStackPakects.pop());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

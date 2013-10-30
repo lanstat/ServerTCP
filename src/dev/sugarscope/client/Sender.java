@@ -35,6 +35,7 @@ public class Sender extends Observable implements Runnable{
 					mclsOutput.write(larrCutting);
 					mclsOutput.flush();
 					mblnRunning = false;
+					System.out.println("Size: "+mclsData.length);
 					setChanged();
 					notifyObservers();
 				}else{

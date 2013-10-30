@@ -47,7 +47,7 @@ public class Reader implements Runnable{
 			} catch (IOException | ClassNotFoundException e) {
 				mblnIsAlive = false;
 				System.out.println(e);
-				ServerTCP.getPeer(mintPeerId).close();
+				//ServerTCP.getPeer(mintPeerId).close();
 			}
 		}
 		

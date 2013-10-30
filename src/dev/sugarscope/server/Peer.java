@@ -13,6 +13,7 @@ public class Peer implements Observer{
 	private Reader mclsReader;
 	private Socket mclsSocket;
 	private int mintGroup;
+	private String mUniqCode;
 	private Stack<Packet> marrStackPakects;
 	private boolean mblnSendingInProcess;
 	
@@ -32,6 +33,16 @@ public class Peer implements Observer{
 	
 	public int getGroupID(){
 		return mintGroup;
+	}
+	
+	public void setUniqCode(String uniqCode){
+		mUniqCode = uniqCode;
+	}
+	
+	public String getUniqCode(){
+		if(mUniqCode == null)
+			return "123456";
+		return mUniqCode;
 	}
 	
 	public void initialize(Handler lclsHandler) throws IOException{

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ServerTCP {
 	private ServerSocket mclsServer;
@@ -26,12 +27,15 @@ public class ServerTCP {
 		return marrPeersActive;
 	}
 	
-	public static Peer getPeer(int lintId){
-		for(Peer lclsPeer: marrPeersActive){
-			if(lclsPeer.hashCode() == lintId)
-				return lclsPeer;
+	public static Peer getPeer(String code){
+		Peer tmp = null;
+		for(Peer peer: marrPeersActive){
+			if(peer.getUniqCode().equals(code)){
+				tmp = peer;
+				break;
+			}
 		}
-		return null;
+		return tmp;
 	}
 	
 	private void acceptClients() throws IOException{

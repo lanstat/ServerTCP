@@ -28,23 +28,27 @@ public class Sender extends Observable implements Runnable{
 
 	@Override
 	public void run() {
-		while(mblnRunning){
-			try {
-				if(mclsData.length < mintPointer + MAX_SIZE){
-					final byte[] larrCutting = Arrays.copyOfRange(mclsData, mintPointer, mclsData.length);
-					mclsOutput.write(larrCutting);
+		try {
+			while(mblnRunning){
+				try {
+					if(mclsData.length < mintPointer + MAX_SIZE){
+						final byte[] larrCutting = Arrays.copyOfRange(mclsData, mintPointer, mclsData.length);
+						mclsOutput.write(larrCutting);
+						mblnRunning = false;
+						setChanged();
+						notifyObservers();
+					}else{
+						final byte[] larrCutting = Arrays.copyOfRange(mclsData, mintPointer, MAX_SIZE+mintPointer);
+						mintPointer += MAX_SIZE;
+						mclsOutput.write(larrCutting);
+					}
+				} catch (IOException e) {
+					Logger.e("dev.sugarscope.server.Sender.run", e);
 					mblnRunning = false;
-					setChanged();
-					notifyObservers();
-				}else{
-					final byte[] larrCutting = Arrays.copyOfRange(mclsData, mintPointer, MAX_SIZE+mintPointer);
-					mintPointer += MAX_SIZE;
-					mclsOutput.write(larrCutting);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				mblnRunning = false;
 			}
+		} catch (Exception e) {
+			Logger.e("dev.sugarscope.server.Sender.run", e);
 		}
 	}
 

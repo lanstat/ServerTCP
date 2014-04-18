@@ -12,10 +12,9 @@ import dev.sugarscope.transport.Packet;
 public class Peer implements Observer{
 	private Reader mclsReader;
 	private Socket mclsSocket;
-	private int mintGroup;
-	private String mUniqCode;
 	private Stack<Packet> marrStackPakects;
 	private boolean mblnSendingInProcess;
+	private String mstrKey;
 	
 	public Peer(Socket lclsSocket){
 		mclsSocket = lclsSocket;
@@ -27,27 +26,9 @@ public class Peer implements Observer{
 		return mclsSocket;
 	}
 	
-	public void setGroupID(int lintID){
-		mintGroup = lintID;
-	}
-	
-	public int getGroupID(){
-		return mintGroup;
-	}
-	
-	public void setUniqCode(String uniqCode){
-		mUniqCode = uniqCode;
-	}
-	
-	public String getUniqCode(){
-		if(mUniqCode == null)
-			return "123456";
-		return mUniqCode;
-	}
-	
 	public void initialize(Handler lclsHandler) throws IOException{
 		lclsHandler.setPeer(this);
-		mclsReader = new Reader(mclsSocket.getInputStream(), lclsHandler, hashCode());
+		mclsReader = new Reader(lclsHandler, this);
 		new Thread(mclsReader).start();
 	}
 	
@@ -63,6 +44,14 @@ public class Peer implements Observer{
 			e.printStackTrace();
 			mblnSendingInProcess = false;
 		}
+	}
+	
+	public void setKey(String lstrKey){
+		mstrKey = lstrKey;
+	}
+	
+	public String getKey(){
+		return mstrKey;
 	}
 	
 	/**
@@ -84,26 +73,25 @@ public class Peer implements Observer{
 	
 	public void close(){
 		try {
-			mclsReader.setRunning(false);
-			ServerTCP.getPeers().remove(this);
-			mclsSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			System.out.println("Conexion terminada");
+			mclsReader.close();
+			if(mclsSocket!=null && mclsSocket.isConnected())
+				mclsSocket.close();
+			Logger.i("Conexion terminada");
+		} catch (Exception e) {
+			Logger.e("dev.sugarscope.server.Peer.close()", e);
 		}
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if(marrStackPakects.isEmpty()){
-			mblnSendingInProcess = false;
-			return;
-		}
 		try {
+			if(marrStackPakects.isEmpty()){
+				mblnSendingInProcess = false;
+				return;
+			}
 			sendPacketNow(marrStackPakects.pop());
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Logger.e("dev.sugarscope.server.Peer.update()", e);
 		}
 	}
 }

@@ -3,16 +3,21 @@ package dev.sugarscope.server;
 
 import dev.sugarscope.transport.Packet;
 
+/**
+ * Clase que recepciona las peticiones hechas por los clientes
+ * @author lanstat
+ *
+ */
 public abstract class Handler {
 	
-	protected Peer mPeer;
+	protected Peer mclsPeer;
 	
 	public void setPeer(Peer lclsPeer){
-		mPeer = lclsPeer;
+		mclsPeer = lclsPeer;
 	}
 	
 	public void response(Packet lclsPacket){
-		mPeer.sendPackage(lclsPacket);
+		mclsPeer.sendPackage(lclsPacket);
 	}
 	
 	public abstract void handleMessage(Packet lclsRequest);

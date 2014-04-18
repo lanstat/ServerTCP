@@ -2,7 +2,6 @@ package dev.sugarscope.server;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import dev.sugarscope.generic.Utils;
 import dev.sugarscope.transport.Packet;
@@ -13,13 +12,13 @@ public class Reader implements Runnable{
 	public final int BUFFER_SIZE = 1024;
 	private boolean mblnIsAlive = true;
 	private Handler mclsHandler;
-	private final int mintPeerId;
+	private Peer mclsPeer;
 	
-	public Reader(InputStream lclsInput, Handler lclsHandler, int lintPeerId) throws IOException{
+	public Reader(Handler lclsHandler, Peer lclsPeer) throws IOException{
 		marrBuffer = new byte[0];
-		mclsInput = new BufferedInputStream(lclsInput);
+		mclsInput = new BufferedInputStream(lclsPeer.getConnection().getInputStream());
 		mclsHandler = lclsHandler;
-		mintPeerId = lintPeerId;
+		mclsPeer = lclsPeer;
 	}
 	
 	public void setRunning(boolean lblnRun){
@@ -30,29 +29,46 @@ public class Reader implements Runnable{
 		}
 	}
 	
-	@Override
-	public void run() {
-		while (mblnIsAlive) {
-			try {
-				byte[] larrBuffer = new byte[BUFFER_SIZE];
-				mclsInput.read(larrBuffer);
-				if(mclsInput.available()==0){
-					marrBuffer = Utils.concat(marrBuffer, larrBuffer);
-					final Packet lclsPacket = (Packet)Utils.deserialize(marrBuffer);
-					mclsHandler.handleMessage(lclsPacket);
-					marrBuffer = new byte[0];
-				}else{
-					marrBuffer = Utils.concat(marrBuffer, larrBuffer);
-				}
-			} catch (IOException | ClassNotFoundException e) {
-				mblnIsAlive = false;
-				System.out.println(e);
-				//ServerTCP.getPeer(mintPeerId).close();
-			}
-		}
-		
+	public boolean isAlive(){
+		return mblnIsAlive;
 	}
 	
+	public void close(){
+		try {
+			mclsInput.close();
+			mblnIsAlive = false;
+		} catch (Exception e) {
+			Logger.e("dev.sugarscope.server.Reader.close()", e);
+		}
+	}
 	
+	@Override
+	public void run() {
+		byte[] larrBuffer;
+		try {
+			while (mblnIsAlive) {
+				try {
+					larrBuffer = new byte[BUFFER_SIZE];
+					mclsInput.read(larrBuffer);
+					if(mclsInput.available()==0){
+						marrBuffer = Utils.concat(marrBuffer, larrBuffer);
+						final Packet lclsPacket = (Packet)Utils.deserialize(marrBuffer);
+						mclsHandler.handleMessage(lclsPacket);
+						marrBuffer = new byte[0];
+					}else{
+						marrBuffer = Utils.concat(marrBuffer, larrBuffer);
+					}
+				} catch (IOException | ClassNotFoundException e) {
+					mblnIsAlive = false;
+					Logger.e("dev.sugarscope.server.Reader.run()", e);
+				}
+			}
+			PeersActive.getInstance().remove(mclsPeer);
+		} catch (Exception e) {
+			Logger.e("dev.sugarscope.server.Reader.run()", e);
+		} finally {
+			larrBuffer = null;
+		}
+	}
 	
 }

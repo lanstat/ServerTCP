@@ -11,7 +11,7 @@ import dev.sugarscope.transport.Packet;
 
 public class Client implements Observer{
 	private Socket mclsSocket;
-	private static Client mclsClient;
+	private static Client mclsInstance;
 	private Reader mclsReader;
 	private ArrayList<Packet> marrStackPakects;
 	private boolean mblnSendingInProcess;
@@ -22,9 +22,9 @@ public class Client implements Observer{
 	}
 	
 	public static Client getInstance(){
-		if(mclsClient==null)
-			mclsClient = new Client();
-		return mclsClient;
+		if(mclsInstance==null)
+			mclsInstance = new Client();
+		return mclsInstance;
 	}
 	
 	/**
